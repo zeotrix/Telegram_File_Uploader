@@ -1,0 +1,70 @@
+import asyncio
+from datetime import datetime, timedelta
+from telethon import TelegramClient
+#import logging
+import os
+
+###logging.basicConfig(level=logging.DEBUG)  # Enable detailed logs
+
+# Replace these with your actual values
+api_id = your api id  # Get this from https://my.telegram.org
+api_hash = 'your api hash'  # Get this from https://my.telegram.org
+phone_number = '+123456789'  # Your phone number with country code
+
+# Initialize the Telegram client through a proxy
+proxy = ('socks5' , '127.0.0.1', port)  # Replace with actual proxy details
+client = TelegramClient('session_name', api_id, api_hash, proxy=proxy   )
+
+def progress_callback(current, total):
+    percent = (current / total) * 100
+    print(f"Uploaded: {percent:.2f}% ({current} of {total} bytes)")
+
+async def send_files_with_progress():
+    # Connect and log in (if required)
+    print("trying to connect to server, time is " , datetime.now())
+    await client.start(phone=phone_number)
+    print("Client is running! time is " , datetime.now())
+    
+    folder_path ="C:\\Users\\Main\\Desktop\\mydatafolder"  # Replace with the actual folder path
+    files = sorted(os.listdir(folder_path))
+    
+    for file_path in files:
+        if not os.path.exists(file_path):
+            print(f"File does not exist: {file_path}")
+            continue
+
+        try:
+            print(f"Uploading file: {file_path}")
+            await client.send_file(
+                'me',  # Sending to yourself
+                file_path,
+                progress_callback=progress_callback
+            )
+            print(f"File sent successfully: {file_path} at", datetime.now())
+        except Exception as e:
+            print(f"Failed to send {file_path}: {e}")
+
+async def run_at_specific_time(target_time):
+    now = datetime.now()
+    delay = (target_time - now).total_seconds()
+
+    if delay > 0:
+        print(f"Sleeping for {delay:.2f} seconds until {target_time}")
+        await asyncio.sleep(delay)
+
+    # Run the function
+    print("connecting starts")
+    await send_files_with_progress()
+
+# Specify the time to run the function
+hour = int(input("hour: "))  # 2 PM
+minute = int(input("minute: "))
+target_time = datetime.now().replace(hour=hour, minute=minute, second=0, microsecond=0)
+
+# Adjust the target time to the next day if it's already past
+if target_time < datetime.now():
+    target_time += timedelta(days=1)
+
+
+# Start the client and run the async function
+client.loop.run_until_complete(run_at_specific_time(target_time))
