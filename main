@@ -10,6 +10,10 @@ import os
 api_id = your api id  # Get this from https://my.telegram.org
 api_hash = 'your api hash'  # Get this from https://my.telegram.org
 phone_number = '+123456789'  # Your phone number with country code
+port = your_proxy_port
+folder_path ="C:\\Users\\Main\\Desktop\\mydatafolder"  # Replace with the actual folder path
+hour = int(input("hour: "))  # 2 PM
+minute = int(input("minute: "))
 
 # Initialize the Telegram client through a proxy
 proxy = ('socks5' , '127.0.0.1', port)  # Replace with actual proxy details
@@ -57,8 +61,7 @@ async def run_at_specific_time(target_time):
     await send_files_with_progress()
 
 # Specify the time to run the function
-hour = int(input("hour: "))  # 2 PM
-minute = int(input("minute: "))
+
 target_time = datetime.now().replace(hour=hour, minute=minute, second=0, microsecond=0)
 
 # Adjust the target time to the next day if it's already past
